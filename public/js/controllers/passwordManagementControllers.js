@@ -1,7 +1,9 @@
 // let's define the scotch controller that we call up in the about state
-passwordManagementApp.controller('mainController',['$scope', '$location', '$window', 'AUTH_EVENTS', 'AuthService', 'APP_CONSTANTS',
-                function ($scope, $location, $window, AUTH_EVENTS, AuthService, APP_CONSTANTS){
-    $scope.user = null;
+passwordManagementApp.controller('mainController',['$scope', '$location', '$window', 'AUTH_EVENTS', 'AuthService', 'APP_CONSTANTS','Session',
+                function ($scope, $location, $window, AUTH_EVENTS, AuthService, APP_CONSTANTS, Session){
+    $scope.user = function() {
+       return Session.userId;
+    }
     $scope.token = null;
     $scope.isLoggedIn = function() {
         // return !!$scope.user;

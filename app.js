@@ -32,10 +32,10 @@ models.forEach(function(fileName) {
   require(__dirname+"/app/models/"+fileName);
 });
 
-var livereload = require('express-livereload');
+/*var livereload = require('express-livereload');
 var liverReloadConfig = {};
 liverReloadConfig.watchDir= __dirname+"/public";
-livereload(app, liverReloadConfig);
+livereload(app, liverReloadConfig);*/
 
 
 // Bootstrap the application.

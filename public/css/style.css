@@ -3,6 +3,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 } 
 
+.fullwidth {
+	width:100%;
+}
+
 a { 
   color: #00B7FF; 
 }
@@ -106,8 +110,8 @@ body > #container { height: auto; min-height: 100%; }
 }
 .slide.ng-enter,
 .slide.ng-leave {
-    -webkit-transition: all 2s ease;
-    transition: all 2s ease;
+    -webkit-transition: all 2s ease-in-out;
+    transition: all 2s ease-in-out;
 }
 .slide.ng-enter {
     left: 100%;
