@@ -4,6 +4,7 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg : grunt.file.readJSON("package.json"),
+
 		nodemon : {
 			dev : {
 				script : 'bin/www',
@@ -17,5 +18,5 @@ module.exports = function(grunt) {
 
 	});
 
-	grunt.registerTask('default',['nodemon'])
+	grunt.registerTask('default',['nodemon']);
 }
