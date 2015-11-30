@@ -1,0 +1,20 @@
+{
+    "tenant": {
+        "createdDate": 1405593304000,
+        "updatedDate": 1409746177000,
+        "userName": "BSUAdmin",
+        "password": null,
+        "enabled": true,
+        "email": "bsuadmin@bsu.com",
+        "phoneNumber": "123456",
+        "tenantMapping": "bsu.com",
+        "website": "",
+        "icon": "",
+        "location": null,
+        "clientTemplate": null,
+        "clientScript": null,
+        "activated": true,
+        "iat": 1448028366,
+        "exp": 1448030166
+    }
+}
