@@ -1,0 +1,27 @@
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" ng-init="showBody = true" style="cursor:pointer" ng-click="showBody = !showBody" >
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-bookmark"></span> Quick Shortcuts
+                        <span class="pull-right"><i ng-class="{'glyphicon glyphicon-chevron-up':showBody, 'glyphicon glyphicon-chevron-down': !showBody}"></i></span>
+                    </h3>
+                </div>
+                <div class="panel-body" ng-show="showBody">                   
+                    <div class="row">
+                       <div class="col-xs-12 col-md-12">
+                         <a ui-sref=".adminProfilequestionSetup" class="btn btn-warning btn fullwidth" role="button"><span class="glyphicon glyphicon-bookmark"></span> <br/>Setup Profile Questions</a>
+                       </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                       <div class="col-xs-12 col-md-12">
+                         <a ui-sref=".adminSettings" class="btn btn-primary btn fullwidth" role="button"><span class="glyphicon glyphicon-signal"></span> <br/>Settings</a>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

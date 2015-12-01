@@ -4,7 +4,7 @@
  * @param  {[type]} ){	this.create [description]
  * @return {[type]}                 [description]
  */
-passwordManagementApp.service("Session", ['$window',function($window){	
+passwordManagementApp.service("Session", ['$window',function($window){			
 	this.create = function(sessionId, userId, userRole, token) {
 		this.id = sessionId;
 		this.userId = userId;
@@ -16,7 +16,7 @@ passwordManagementApp.service("Session", ['$window',function($window){
 			userRole : userRole,
 			token : token
 		}
-		$window.sessionStorage["user"] = JSON.stringify(user);
+		$window.sessionStorage["user"] = btoa(JSON.stringify(user));
 	};
 
 	this.destroy = function() {
@@ -36,7 +36,11 @@ passwordManagementApp.service("Session", ['$window',function($window){
 passwordManagementApp.factory("AuthService",['$http','Session', '$window', function($http, Session, $window){
 	var authService = {};
 	authService.login = function(credentials) {
-		return $http.post("/login", credentials)
+		var loginUrl = "/login";
+		if (!credentials.siteId || credentials.siteId.trim() === "" ) {
+			loginUrl = "/authenticate";
+		}
+		return $http.post(loginUrl, credentials)
 					.then(function(res){
 						Session.create(res.data.id, res.data.user.id, res.data.user.role, res.data.token);
 						return res.data;
@@ -60,9 +64,13 @@ passwordManagementApp.factory("AuthService",['$http','Session', '$window', funct
 	}
 	
 	// Set the session id and token from local storage if available.
-    if ($window.sessionStorage["user"] !== undefined) {    	
-        var user = JSON.parse($window.sessionStorage["user"]);
-        Session.create(user.id, user.userId, user.userRole, user.token);
+    if ($window.sessionStorage["user"] !== undefined) {  
+    	try {  	
+	        var user = JSON.parse(atob($window.sessionStorage["user"]));
+	        Session.create(user.id, user.userId, user.userRole, user.token);
+	    } catch (err) {
+	    	authService.logout();
+	    }
     }
 	return authService;
 
@@ -80,13 +88,14 @@ passwordManagementApp.factory("AuthService",['$http','Session', '$window', funct
  * @param  {[type]} responseError: function      (response)  {            			if (!(--numLoadings)) {                                                $rootScope.$broadcast(APP_CONSTANTS.hideLoader);			}			$rootScope.$broadcast({		    	401: AUTH_EVENTS.notAuthenticated,		    	403: AUTH_EVENTS.notAuthorized,		    	419: AUTH_EVENTS.sessionTimeout,		    	440: AUTH_EVENTS.sessionTimeout		  	}[response.status], response [description]
  * @return {[type]}                [description]
  */
-passwordManagementApp.factory('AuthInterceptor', ['$rootScope','$q','AUTH_EVENTS', 'APP_CONSTANTS' ,function ($rootScope, $q,
-                                      AUTH_EVENTS, APP_CONSTANTS) {
+passwordManagementApp.factory('AuthInterceptor', ['$rootScope','$q','AUTH_EVENTS', 'APP_CONSTANTS' , 'Session', function ($rootScope, $q,
+                                      AUTH_EVENTS, APP_CONSTANTS, Session) {
 	var numLoadings=0;
 	return {
         request: function (config) {
             numLoadings++;
             $rootScope.$broadcast(APP_CONSTANTS.showLoader);
+            config.headers['x-access-token'] = Session.token;
             return config || $q.when(config)
         },
         response: function (response) {
@@ -103,7 +112,8 @@ passwordManagementApp.factory('AuthInterceptor', ['$rootScope','$q','AUTH_EVENTS
 		    	401: AUTH_EVENTS.notAuthenticated,
 		    	403: AUTH_EVENTS.notAuthorized,
 		    	419: AUTH_EVENTS.sessionTimeout,
-		    	440: AUTH_EVENTS.sessionTimeout
+		    	440: AUTH_EVENTS.sessionTimeout,
+		    	500 :AUTH_EVENTS.serverError
 		  	}[response.status], response);
 		  	return $q.reject(response);
 		}

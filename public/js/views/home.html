@@ -1,35 +1,22 @@
 <div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading" ng-init="showBody = true" style="cursor:pointer" ng-click="showBody = !showBody" >
-                    <h3 class="panel-title">
-                        <span class="glyphicon glyphicon-bookmark"></span> Quick Shortcuts
-                        <span class="pull-right"><i ng-class="{'glyphicon glyphicon-chevron-up':showBody, 'glyphicon glyphicon-chevron-down': !showBody}"></i></span>
-                    </h3>
-                </div>
-                <div class="panel-body" ng-show="showBody">
-                    <div class="row">
-                       <div class="col-xs-3 col-md-3">
-                         <a href="#" class="btn btn-danger btn-lg fullwidth" role="button"><span class="glyphicon glyphicon-list-alt"></span> <br/>Profile</a>
-                       </div>
-                       <div class="col-xs-3 col-md-3">
-                         <a href="#" class="btn btn-warning btn-lg fullwidth" role="button"><span class="glyphicon glyphicon-bookmark"></span> <br/>Profile Questions</a>
-                       </div>
-                       <div class="col-xs-3 col-md-3">
-                         <a href="#" class="btn btn-primary btn-lg fullwidth" role="button"><span class="glyphicon glyphicon-signal"></span> <br/>Reset Password</a>
-                       </div>
-                       <div class="col-xs-3 col-md-3">
-                         <a href="#" class="btn btn-success btn-lg fullwidth" role="button"><span class="glyphicon glyphicon-comment"></span> <br/>Comments</a>
-                       </div>
-                          <!-- 
-                          <a href="#" class="btn btn-success btn-lg" role="button"><span class="glyphicon glyphicon-user"></span> <br/>Profile</a>
-                          <a href="#" class="btn btn-info btn-lg" role="button"><span class="glyphicon glyphicon-file"></span> <br/>Notes</a>
-                          <a href="#" class="btn btn-primary btn-lg" role="button"><span class="glyphicon glyphicon-picture"></span> <br/>Photos</a>
-                          <a href="#" class="btn btn-primary btn-lg" role="button"><span class="glyphicon glyphicon-tag"></span> <br/>Tags</a> -->
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-md-3">
+      <span ng-show="isUser()">
+        <div ng-include="'js/views/partials/includes/userHome.html'"></div>
+      </span>
+      <span ng-show="isAdmin()">
+        <div ng-include="'js/views/partials/includes/adminHome.html'"></div>
+      </span>
     </div>
+    <div class="col-md-9">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong>{{pageDef}}</strong>
+        </div>
+        <div class="panel-body">
+            <div ui-view class="slider"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

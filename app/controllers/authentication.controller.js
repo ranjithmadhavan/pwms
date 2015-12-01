@@ -27,8 +27,7 @@ var authenticateAgainstQuickLaunch = function(email, password) {
 	return new Promise(function(resolve, reject){
 		if (envProps.environment === 'development') {
 			var testDataPath =  require('app-root-path').resolve('config/testData/tenant.json');			
-			var user = require('fs').readFileSync(testDataPath);			
-			console.log("Test User "+testDataPath);
+			var user = require('fs').readFileSync(testDataPath);		
 			resolve(JSON.parse(user).tenant);
 		} else {
 			reqopts.formData.email = email;
@@ -54,19 +53,88 @@ var authenticateAgainstQuickLaunch = function(email, password) {
 }
 
 exports.authenticate = function(req, res) {
-	authenticateAgainstQuickLaunch(req.body.email,req.body.password)
+	authenticateAgainstQuickLaunch(req.body.userName,req.body.password)
 		.then(function(tenant){
 			addUserToDatabase(tenant)
 			.then(function(){
 				tenant.icon = "";
-				jwt.sign(tenant, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
-					res.json({tenant:tenant,token:token});
+				jwt.sign({userId:tenant.userName, tenantMapping:null, role:"ROLE_ADMIN"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
+					res.json({id: tenant.userName, user : {id:tenant.userName, role: "ROLE_ADMIN"}, token:token });	
 				});
 			});
 		})
 		.catch(function(error){
 			res.status(403).json({errorMsg: error});
 		})
+}
+
+exports.profile = function(req, res) {
+	// Get the user's password
+	// Get the users profile using webservice call
+	// send the response
+	async.waterfall([
+			function(callback){
+				callback(null, req, res);
+			},
+			fetchUserFromDb,
+			fn2,
+			fn3
+		],
+		function(err){
+		      if (err) {
+		        console.log("Error is "+err);
+		        res.status(500).json({errorMsg: "Unknown error "+err});
+		      } else {
+		        console.log("No Error");
+		      }
+		}
+		);
+}
+
+/**
+ * Gets the user from the database based on userid and tenant mapping
+ * 
+ * @param  {[type]}   req      [description]
+ * @param  {[type]}   res      [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+function fetchUserFromDb (req, res, callback) {
+	console.log("fetchUserFromDb "+req.loggedInUser.userId);
+	if (req.loggedInUser.tenantMapping && req.loggedInUser.tenantMapping.trim() !== "") {
+		User.findOne({"userId": req.loggedInUser.userId, "tenantMapping":req.loggedInUser.tenantMapping}, function(err, user){
+			if (err) {
+				callback(err);
+			} else {			
+				callback(null, req, res, user);
+			}
+		});
+	} else {
+		res.status(403).json({errorMsg: "Cannot get profile for admin user"});
+	}
+}
+
+/**
+ * Makes the webservice call to get the user profile response
+ * 
+ * @param  {[type]}   req      [description]
+ * @param  {[type]}   res      [description]
+ * @param  {[type]}   user     [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+function fn2(req, res, user, callback) {
+	console.log("Fn2 "+user.password);
+	callback(null,req, res)
+}
+
+function fn3(req, res, callback) {
+	console.log("fn3 "+req.loggedInUser.role)
+	res.json({userName:req.loggedInUser.userId, tenantMapping:req.loggedInUser.tenantMapping, role:req.loggedInUser.role});		
+}
+
+function getUserFromDb(req, res) {
+	console.log("Called");
 }
 
 /**
@@ -84,7 +152,7 @@ exports.isAuthenticated = function(req,res,next) {
   		// verifies secret and checks exp
 	    jwt.verify(token, envProps.jwt.secret, function(err, decoded) {      
 	      if (err) {
-	        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+	        return res.status(401).json({ success: false, message: 'Failed to authenticate token.' });    
 	      } else {
 	        // if everything is good, save to request for use in other routes
 	        req.loggedInUser = decoded;    
@@ -208,7 +276,7 @@ exports.login = function(req, res, next) {
 	        		console.log("user already exists. Update password");
 	        		user.password = password;
 	        		user.save();
-	        		jwt.sign(user.userId, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
+	        		jwt.sign({userId:user.userId, tenantMapping:siteId, role:"ROLE_USER"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
 	        			res.json({id: userName, user : {id:userName, role: "ROLE_USER"} , token:token });		        			
 					});	
 	        	} else {
@@ -220,7 +288,7 @@ exports.login = function(req, res, next) {
 	        		});
 	        		newUser.save(function(err, user) {
 	        			if (!err) {
-			        		jwt.sign(user.userId, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
+			        		jwt.sign({userId:user.userId, tenantMapping:siteId, role:"ROLE_USER"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
 			        			res.json({id: userName, user : {id:userName, role: "ROLE_USER"}, token:token });	
 							});	        				
 	        			} else {

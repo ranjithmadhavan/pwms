@@ -1,46 +1,85 @@
-// let's define the scotch controller that we call up in the about state
-passwordManagementApp.controller('mainController',['$scope', '$location', '$window', 'AUTH_EVENTS', 'AuthService', 'APP_CONSTANTS','Session',
-                function ($scope, $location, $window, AUTH_EVENTS, AuthService, APP_CONSTANTS, Session){
+/**
+ * Main controller. We can put stuff in here rather than putting in root scope.
+ * 
+ * @param  {[type]} $scope        [description]
+ * @param  {[type]} $location     [description]
+ * @param  {[type]} $window       [description]
+ * @param  {[type]} AUTH_EVENTS   [description]
+ * @param  {[type]} AuthService   [description]
+ * @param  {[type]} APP_CONSTANTS [description]
+ * @param  {[type]} Session){                    $scope.user [description]
+ * @return {[type]}               [description]
+ */
+passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', 'AUTH_EVENTS', 'AuthService', 'APP_CONSTANTS','Session', "USER_ROLES",
+                function ($scope, $location, $window, AUTH_EVENTS, AuthService, APP_CONSTANTS, Session, USER_ROLES){
     $scope.user = function() {
        return Session.userId;
     }
     $scope.token = null;
+    $scope.pageDef = "";
     $scope.isLoggedIn = function() {
-        // return !!$scope.user;
         return AuthService.isAuthenticated();
     }
     $scope.logout = function() {
         AuthService.logout();
-        $location.path("/login");
- 
+        $location.path("/login"); 
     }
 
+    $scope.isAdmin = function() {
+       return USER_ROLES.ROLE_ADMIN === Session.userRole;
+    }
 
+    $scope.isUser = function() {
+       return USER_ROLES.ROLE_USER === Session.userRole;
+    }
 
     $scope.$on(APP_CONSTANTS.showLoader, function (event, args) {
-        // blockUI.start();
         $scope.loaderClass = "spinner-loader spinner-div";
      });
 
      $scope.$on(APP_CONSTANTS.hideLoader, function (event, args) {
-        // Need to stop blockUI multiple times as there is a possibility of multiple starts
-        /*for(var i=0;i<20;i++) {
-            blockUI.stop();
-        }*/
         $scope.loaderClass = ""
      });
 
     $scope.$on(AUTH_EVENTS.loginFailed, function (event, args) {
         console.log("Received Login Failed Broadcast");
      });
+
+
+    $scope.$on(AUTH_EVENTS.notAuthorized, function (event, args) {
+        console.log("Received Not Authorized Broadcast");
+        $location.path("/forbidden");
+     });
+
+    $scope.setPageDef = function(pageDef) {
+        $scope.pageDef = pageDef;
+    }
 }]);  
 
-passwordManagementApp.controller('loginController',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
+/**
+ * Login Controller.
+ * 
+ * @param  {[type]} $scope         [description]
+ * @param  {[type]} $location      [description]
+ * @param  {[type]} $rootScope     [description]
+ * @param  {[type]} AUTH_EVENTS    [description]
+ * @param  {Object} AuthService){                                                             $scope.credentials [description]
+ * @param  {[type]} function       (responseError) {            $scope.errorMsg [description]
+ * @return {[type]}                [description]
+ */
+passwordManagementApp.controller('LoginCtrl',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
     'AuthService',function ($scope, $location, $rootScope, AUTH_EVENTS, AuthService){            
     $scope.credentials = {
-        userName : "kwinters",
+        userName : "kvaughan",
         password : "Password1",
         siteId : "bsu.com"
+      /*  userName : "quicklaunchadmin@quicklaunchsso.com",
+        password : "quicklaunchadmin",
+        siteId : ""*/
+    }
+    // User is already logged in direct to home page.
+    if (AuthService.isAuthenticated()) {        
+        $location.path("/home");
     }
     $scope.login = function() { 
         AuthService.login($scope.credentials).then(function (response) {
@@ -54,8 +93,14 @@ passwordManagementApp.controller('loginController',['$scope', '$location', '$roo
 }]);
 
 
-passwordManagementApp.controller('homeController',['$scope', '$location', 'AuthService',function ($scope, $location, AuthService){    
+passwordManagementApp.controller('HomeCtrl',['$scope', '$location', 'AuthService', '$state',function ($scope, $location, AuthService, $state){    
    if (!AuthService.isAuthenticated()) {
         $location.path("/login");
+   } else if ($scope.isAdmin()){
+       // By Default to to user profile page.
+        $state.go("home.adminSettings");     
+   } else {
+       $state.go("home.userProfile");  
    }
+
 }]);

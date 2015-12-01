@@ -8,7 +8,10 @@ module.exports = function(app) {
 		.post(auth.authenticate);
 
 	app.route("/login")
-		.post(auth.login);		
+		.post(auth.login);	
+
+	app.route("/userProfile")
+		.get(auth.isAuthenticated, auth.profile);			
 
 	app.route("/testauth")
 		.get(auth.isAuthenticated, function(req,res){

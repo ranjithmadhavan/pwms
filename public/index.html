@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="lib/angular-block-ui/dist/angular-block-ui.min.css"/>
 	<link rel="stylesheet" type="text/css" href="lib/css-spinners/css/spinners.css"/>
 </head>
-<body ng-controller="mainController">
+<body ng-controller="MainCtrl">
 	<div id="container">
 		<header>
 			<div ng-show="isLoggedIn()">
@@ -40,7 +40,9 @@
 <!-- Application Javascripts -->
 <script type="text/javascript" src="js/passwordManagementApp.js"></script>
 <script type="text/javascript" src="js/controllers/passwordManagementControllers.js"></script>
+<script type="text/javascript" src="js/controllers/pwmsUserController.js"></script>
 <script type="text/javascript" src="js/services/pwmsService.js"></script>
+<script type="text/javascript" src="js/services/userService.js"></script>
 <script>
   document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
   ':35729/livereload.js?snipver=1"></' + 'script>')

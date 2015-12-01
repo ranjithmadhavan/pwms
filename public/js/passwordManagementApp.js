@@ -7,16 +7,32 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
         // HOME STATES AND NESTED VIEWS ========================================
         .state('home', {
             url: '/home',
-            controller:'homeController',
+            controller:'HomeCtrl',
             templateUrl: 'js/views/home.html'
+        })   
+        .state('home.adminSettings', {
+            url: '/adminSettings',
+            controller:"AdminSettingsCtrl",
+            templateUrl: 'js/views/partials/adminSettings.html'
         })     
+        .state('home.adminProfilequestionSetup', {
+            url: '/adminProfileQuestionSetup',
+            controller : "AdminProfileQuestionsCtrl",
+            templateUrl: 'js/views/partials/adminProfileQuestionSetup.html'
+        })              
+        .state('home.userProfile', {
+            url: '/userProfile',
+            controller: 'UserProfileCtrl',
+            templateUrl: 'js/views/partials/userProfile.html'
+        })    
         .state('login', {
             url: '/login',
-            controller : 'loginController',
+            controller : 'LoginCtrl',
             templateUrl : 'js/views/login.html'
         })      
-        .state('about', {
-            // we'll get to this in a bit       
+        .state('403', {
+            url : "/forbidden",
+            templateUrl : "js/views/partials/403.html"
         });
         
 })
@@ -34,7 +50,8 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
   logoutSuccess: 'auth-logout-success',
   sessionTimeout: 'auth-session-timeout',
   notAuthenticated: 'auth-not-authenticated',
-  notAuthorized: 'auth-not-authorized'
+  notAuthorized: 'auth-not-authorized',
+  serverError : 'internal-server-error'
 })
 
 .constant('USER_ROLES', {
