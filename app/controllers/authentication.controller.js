@@ -23,11 +23,11 @@ var request = require('request'),
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
-var authenticateAgainstQuickLaunch = function(email, password) {
+var authenticateAgainstQuickLaunch = function(email, password) {	
 	return new Promise(function(resolve, reject){
 		if (envProps.environment === 'development') {
 			var testDataPath =  require('app-root-path').resolve('config/testData/tenant.json');			
-			var user = require('fs').readFileSync(testDataPath);		
+			var user = require('fs').readFileSync(testDataPath);
 			resolve(JSON.parse(user).tenant);
 		} else {
 			reqopts.formData.email = email;
@@ -54,7 +54,7 @@ var authenticateAgainstQuickLaunch = function(email, password) {
 
 exports.authenticate = function(req, res) {
 	authenticateAgainstQuickLaunch(req.body.userName,req.body.password)
-		.then(function(tenant){
+		.then(function(tenant){			
 			addUserToDatabase(tenant)
 			.then(function(){
 				tenant.icon = "";
@@ -64,6 +64,7 @@ exports.authenticate = function(req, res) {
 			});
 		})
 		.catch(function(error){
+			console.log("Authentication failed due to "+error);
 			res.status(403).json({errorMsg: error});
 		})
 }
@@ -77,8 +78,8 @@ exports.profile = function(req, res) {
 				callback(null, req, res);
 			},
 			fetchUserFromDb,
-			fn2,
-			fn3
+			fetchUserAttributes,
+			formatResult
 		],
 		function(err){
 		      if (err) {
@@ -100,7 +101,6 @@ exports.profile = function(req, res) {
  * @return {[type]}            [description]
  */
 function fetchUserFromDb (req, res, callback) {
-	console.log("fetchUserFromDb "+req.loggedInUser.userId);
 	if (req.loggedInUser.tenantMapping && req.loggedInUser.tenantMapping.trim() !== "") {
 		User.findOne({"userId": req.loggedInUser.userId, "tenantMapping":req.loggedInUser.tenantMapping}, function(err, user){
 			if (err) {
@@ -123,19 +123,54 @@ function fetchUserFromDb (req, res, callback) {
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-function fn2(req, res, user, callback) {
-	console.log("Fn2 "+user.password);
-	callback(null,req, res)
+function fetchUserAttributes(req, res, user, callback) {
+	var userProfileUrl = envProps.wso2.webservices.user.login.url;
+	var userName = user.userId;
+	var password = user.password;
+	var siteId = user.tenantMapping;
+	if (!userName || !password || !siteId) {
+		res.json({errorMsg: "Could not get userid of the user from database"});
+	} 
+	userProfileUrl = userProfileUrl.replaceAll("##USERNAME##",userName+"@"+siteId).replaceAll("##PASSWORD##",password);
+	wsClient.makeSoapCall(userProfileUrl, "userLogin.xml", null)
+      .then(function(wsResponse){
+      		// Get Attribute Keys
+      		var keys = new Promise(function(resolve, reject){      			
+	      		wsClient.parseResponse(wsResponse, '{"ax2307" : "http://dto.mgt.identity.carbon.wso2.org/xsd"}',"//ax2307:claimUri/text()")
+	      			.then(function(parsedResponse){
+	      				resolve(parsedResponse);
+	      			}); 
+      		});
+      		// Get Attribute Values
+      		var values = new Promise(function(resolve, reject){      			
+	      		wsClient.parseResponse(wsResponse, '{"ax2307" : "http://dto.mgt.identity.carbon.wso2.org/xsd"}',"//ax2307:claimValue/text()")
+	      			.then(function(parsedResponse){
+	      				resolve(parsedResponse);
+	      			});
+      		}); 
+      		// Once we get both keys and values return the result
+      		Promise.all([keys, values])
+      			.then(function(result){
+        			callback(null, req, res, result);
+      			});
+      })
+      .catch(function(error){
+        callback(error);
+      });
 }
 
-function fn3(req, res, callback) {
-	console.log("fn3 "+req.loggedInUser.role)
-	res.json({userName:req.loggedInUser.userId, tenantMapping:req.loggedInUser.tenantMapping, role:req.loggedInUser.role});		
+function formatResult(req, res, result, callback) {
+	console.log("formatResult result is "+result)
+	var keys = result[0];
+	var values = result[1];
+	var valueToReturn = {};
+	keys.forEach(function(element, index, array){
+		var lastIndexOfSlash = element.data.lastIndexOf("/")+1;		
+		valueToReturn[element.data.substring(lastIndexOfSlash)] = values[index].data;
+	});
+	res.json({userAttributes:valueToReturn});
 }
 
-function getUserFromDb(req, res) {
-	console.log("Called");
-}
 
 /**
  * Middleware function to validate JWT
@@ -223,7 +258,6 @@ var addUserToDatabase = function(userFromQuickLaunch) {
  * @return {[type]}        [description]
  */
 exports.login = function(req, res, next) {	
-	console.log("In Login");
 	var loginUrl = envProps.wso2.webservices.user.login.url;
 	var userName = req.body.userName;
 	var siteId = req.body.siteId;
@@ -232,7 +266,6 @@ exports.login = function(req, res, next) {
 		res.status(403).json({errorMsg: "Provide UserName, Password & SiteId"});
 	} 
 	loginUrl = loginUrl.replaceAll("##USERNAME##",userName+"@"+siteId).replaceAll("##PASSWORD##",password);
-	console.log("Login Url is "+loginUrl);
 	// If there is a registred tenant then try and authenticate the user
 	async.waterfall([
 	    // First Check whether the site id is registered.
@@ -258,7 +291,7 @@ exports.login = function(req, res, next) {
 	    // Parse the response and see whether there are any errors.
 	    function(loginResult, callback) {
 	      wsClient.parseResponse(loginResult, '{"soapenv":"http://www.w3.org/2003/05/soap-envelope"}', "//soapenv:Fault//soapenv:Text/text()")
-	        .then(function(result){
+	        .then(function(result){	        	
 	          callback(null, result)
 	        })
 	        .catch(function(err){
@@ -268,7 +301,6 @@ exports.login = function(req, res, next) {
 	    // If no errors add the user to the user db.
 	    function(faultResponse, callback) {
 	      if (faultResponse && faultResponse.length > 0) {
-	        console.log("Fault Response is "+faultResponse);
 	        res.status(403).json({errorMsg: "Invalid UserId and/or Password"});
 	      } else {
 	        User.findOne({"tenantMapping":siteId, userId: userName}, function(err, user){	        	
@@ -304,7 +336,7 @@ exports.login = function(req, res, next) {
 	  ], function(err){
 	      if (err) {
 	        console.log("Error is "+err);
-	        res.status(403).json({errorMsg: "Unknown error "+err});
+	        res.status(500).json({errorMsg: "Unknown error "+err});
 	      } else {
 	        console.log("No Error");
 	      }

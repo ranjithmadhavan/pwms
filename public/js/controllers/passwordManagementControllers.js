@@ -45,6 +45,11 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
         console.log("Received Login Failed Broadcast");
      });
 
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, args) {
+        console.log("Received not Authenciated Broadcast");
+        $scope.errorMsg = "Session expired. Please login";
+        $scope.logout();
+     });
 
     $scope.$on(AUTH_EVENTS.notAuthorized, function (event, args) {
         console.log("Received Not Authorized Broadcast");
