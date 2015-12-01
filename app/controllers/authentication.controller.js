@@ -166,7 +166,7 @@ function formatResult(req, res, result, callback) {
 	var valueToReturn = {};
 	keys.forEach(function(element, index, array){
 		var lastIndexOfSlash = element.data.lastIndexOf("/")+1;		
-		valueToReturn[element.data.substring(lastIndexOfSlash)] = values[index].data;
+		valueToReturn[element.data.substring(lastIndexOfSlash).capitalize()] = values[index].data;
 	});
 	res.json({userAttributes:valueToReturn});
 }

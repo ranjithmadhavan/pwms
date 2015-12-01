@@ -40,10 +40,7 @@ livereload(app, liverReloadConfig);*/
 
 // Bootstrap the application.
 reqlib("/config/bootstrap")();
-
-String.prototype.replaceAll = function(target, replacement) {
-  return this.split(target).join(replacement);
-};
+reqlib("/config/polyfill");
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
