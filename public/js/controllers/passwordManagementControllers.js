@@ -75,12 +75,12 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
 passwordManagementApp.controller('LoginCtrl',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
     'AuthService',function ($scope, $location, $rootScope, AUTH_EVENTS, AuthService){            
     $scope.credentials = {
-        userName : "kvaughan",
+     /*   userName : "kvaughan",
         password : "Password1",
-        siteId : "bsu.com"
-      /*  userName : "quicklaunchadmin@quicklaunchsso.com",
+        siteId : "bsu.com"*/
+        userName : "quicklaunchadmin@quicklaunchsso.com",
         password : "quicklaunchadmin",
-        siteId : ""*/
+        siteId : ""
     }
     // User is already logged in direct to home page.
     if (AuthService.isAuthenticated()) {        
@@ -103,9 +103,9 @@ passwordManagementApp.controller('HomeCtrl',['$scope', '$location', 'AuthService
         $location.path("/login");
    } else if ($scope.isAdmin()){
        // By Default to to user profile page.
-        $state.go("home.adminSettings");     
+        $state.go("home.adminProfilequestionSetup");     
    } else {
        $state.go("home.userProfile");  
    }
-
+ 
 }]);
