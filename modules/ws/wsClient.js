@@ -31,7 +31,6 @@ var parseResponse = function(xmlString) {
 
 
 function prepareRequest (wsdlurl, requestTemplateName, params) {
-    console.log("Called prepareRequest");
     return new Promise(function(resolve, reject){
         if (!wsdlurl || !requestTemplateName) {
             reject("WSDL Url and/or requestTemplateName cannot be empty")
@@ -80,7 +79,6 @@ module.exports.parseResponse = function(xmlString, nameSpaceString, xpathString)
  * @return {[type]}                     [description]
  */
 module.exports.makeSoapCall = function(wsdlUrl, requestTemplateName, params) {  
-    console.log("Called make soap call");
     return new Promise(function(resolve, reject){    
         console.log("going to call prepare request");
         prepareRequest(wsdlUrl, requestTemplateName, params)

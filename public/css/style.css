@@ -20,5 +20,15 @@ a {
     height: 3em;
     margin-top: -3em;
 }
+
+.bordered {
+  border : 1px solid #ccccb3;
+  border-radius: 5px;
+}
+
+.padded {
+	padding :10px;
+}
+
 html, body, #container { height: 100%}
 body > #container { height: auto; min-height: 100%; }

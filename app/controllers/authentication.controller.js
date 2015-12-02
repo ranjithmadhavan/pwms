@@ -58,7 +58,7 @@ exports.authenticate = function(req, res) {
 			addUserToDatabase(tenant)
 			.then(function(){
 				tenant.icon = "";
-				jwt.sign({userId:tenant.userName, tenantMapping:null, role:"ROLE_ADMIN"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
+				jwt.sign({userId:tenant.email, tenantMapping:null, role:"ROLE_ADMIN"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
 					res.json({id: tenant.userName, user : {id:tenant.userName, role: "ROLE_ADMIN"}, token:token });	
 				});
 			});
@@ -160,7 +160,6 @@ function fetchUserAttributes(req, res, user, callback) {
 }
 
 function formatResult(req, res, result, callback) {
-	console.log("formatResult result is "+result)
 	var keys = result[0];
 	var values = result[1];
 	var valueToReturn = {};
@@ -190,8 +189,17 @@ exports.isAuthenticated = function(req,res,next) {
 	        return res.status(401).json({ success: false, message: 'Failed to authenticate token.' });    
 	      } else {
 	        // if everything is good, save to request for use in other routes
-	        req.loggedInUser = decoded;    
-	        next();
+	        if (decoded.tenantMapping && decoded.tenantMapping !== null && decoded.tenantMapping.trim() !== "") {
+	        	User.findByUserIdAndTenantMapping(decoded.userId, decoded.tenantMapping, function(user){
+			        req.loggedInUser = user;    
+			        next();	
+	        	});
+	        } else {
+	        	Tenant.findByEmail(decoded.userId, function(user){ 
+	        		req.loggedInUser = user;    
+			        next();	
+	        	});
+	        }
 	      }
 	    });
 		

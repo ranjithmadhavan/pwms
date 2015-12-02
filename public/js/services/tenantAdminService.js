@@ -12,6 +12,34 @@
 passwordManagementApp.factory('TenantAdminService', ['$q', '$http', 
 								function ($q, $http) {
 	var tenantAdminService = {};
+	tenantAdminService.getQuestions = function() {
+		return $http.get("/getQuestions")
+					.then(function(res){
+						return res.data;
+					});
+	}
+
+	tenantAdminService.addQuestion = function (question) {
+		return $http.post("/addQuestion", question)
+					.then(function(res){
+						return res.data
+					});
+	}
+
+
+	tenantAdminService.modifyQuestion = function (question) {
+		return $http.post("/modifyQuestion", question)
+					.then(function(res){
+						return res.data
+					});
+	}
+
+	tenantAdminService.deleteQuestion = function (question) {
+		return $http.post("/deleteQuestion", question)
+					.then(function(res){
+						return res.data
+					});
+	}
 
 	return tenantAdminService;
 }]);

@@ -1,17 +1,59 @@
 <div>
-	<div class="container">
+	
+	<!-- Delete Confirmation Modal Start -->
+	<div class="modal fade bs-example-modal-sm" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	  <div class="modal-dialog modal-sm">
+	    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete Confirmation</h4>
+		      </div>
+	     	  <div class="modal-body">
+        		Are you sure?
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" ng-click="deleteQuestion()">Delete</button>
+		      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Delete Confirmation Modal End -->
+	<div>
 		<h3>Add/Edit Questions</h3>
 	    <div class="row">
-	        <div class="form-group form-group-options col-xs-11 col-sm-8 col-md-4">
-	    		<div class="input-group input-group-option col-xs-12">
-	    			<input type="text" name="option[]" class="form-control" placeholder="Focus me">
-	    			<span class="input-group-addon input-group-addon-remove">
-	    				<span class="glyphicon glyphicon-remove"></span>
-	    			</span>
-	    			{{questions}}
-	    		</div>
+    		<div class="col-md-9">
+    			<input type="text" name="option[]" class="form-control"  placeholder="Add/Edit Question" ng-model="newQuestion.question">
+    		</div>
+    		<div class="col-md-3">
+				<button class="btn btn-sm btn-success" ng-click="addQuestion(newQuestion)" ng-show="!newQuestion._id">Add New Question</button>
+				<button class="btn btn-sm btn-success" ng-click="modifyQuestion(newQuestion)" ng-show="newQuestion._id">Save</button>
+				<button class="btn btn-sm btn-info" ng-click="newQuestion = {}" ng-show="newQuestion._id">Cancel Edit</button>
+			</div>
+	    </div>
+	    <div class="row padded">
+	    	<div class="col-md-12 text-danger text-center" ng-show="validationErrors && validationErrors.length > 0">
+	    		<span ng-repeat="error in validationErrors track by $index">
+	    			&#42; {{error}}
+	    		</span>
 	    	</div>
 	    </div>
+		<hr/>
+	<!-- 	<div class="row">
+		<div class="col-md-12">
+			<span class="pull-right padded"><button class="btn btn-primary btn-sm">Save Questions</button></span>
+		</div>
+	</div> -->
+		<div class="bordered">
+			<div class="row padded" ng-repeat="question in questions">
+				<div class="col-md-10">
+					Question {{$index+1}} - {{question.question}}
+				</div>
+				<button class="btn btn-primary btn-sm" ng-click="prepareQuestionForEdit(question)">Edit</button>
+				<button class="btn btn-danger btn-sm" ng-click="confirmDelete(question)">Remove</button> 
+			<!-- 	<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteConfirmationModal">Modal</button> -->
+			</div>
+		</div>
 	</div>
 
 </div>

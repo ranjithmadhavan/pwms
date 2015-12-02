@@ -88,7 +88,7 @@ passwordManagementApp.factory("AuthService",['$http','Session', '$window', funct
  * @param  {[type]} responseError: function      (response)  {            			if (!(--numLoadings)) {                                                $rootScope.$broadcast(APP_CONSTANTS.hideLoader);			}			$rootScope.$broadcast({		    	401: AUTH_EVENTS.notAuthenticated,		    	403: AUTH_EVENTS.notAuthorized,		    	419: AUTH_EVENTS.sessionTimeout,		    	440: AUTH_EVENTS.sessionTimeout		  	}[response.status], response [description]
  * @return {[type]}                [description]
  */
-passwordManagementApp.factory('AuthInterceptor', ['$rootScope','$q','AUTH_EVENTS', 'APP_CONSTANTS' , 'Session', function ($rootScope, $q,
+passwordManagementApp.factory('AuthInterceptor', ['$rootScope', '$q','AUTH_EVENTS', 'APP_CONSTANTS' , 'Session', function ($rootScope, $q,
                                       AUTH_EVENTS, APP_CONSTANTS, Session) {
 	var numLoadings=0;
 	return {
@@ -109,6 +109,7 @@ passwordManagementApp.factory('AuthInterceptor', ['$rootScope','$q','AUTH_EVENTS
                 $rootScope.$broadcast(APP_CONSTANTS.hideLoader);
 			}
 			$rootScope.$broadcast({
+				400: AUTH_EVENTS.customError,
 		    	401: AUTH_EVENTS.notAuthenticated,
 		    	403: AUTH_EVENTS.notAuthorized,
 		    	419: AUTH_EVENTS.sessionTimeout,

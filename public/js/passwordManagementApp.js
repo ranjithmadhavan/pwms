@@ -45,6 +45,7 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
   ]);
 })
 .constant('AUTH_EVENTS', {
+  customError : 'errormessage-from-server',
   loginSuccess: 'auth-login-success',
   loginFailed: 'auth-login-failed',
   logoutSuccess: 'auth-logout-success',
