@@ -63,3 +63,23 @@ passwordManagementApp.controller('AdminProfileQuestionsCtrl',['$scope', '$locati
 
 	    $scope.setPageDef ("Manage Password Recovery Questions"); 
 }]);
+
+/**
+ * Tenant Admin Settings Controller.
+ * 
+ * @param  {[type]} $scope                   [description]
+ * @param  {[type]} $location                [description]
+ * @param  {[type]} $rootScope               [description]
+ * @param  {[type]} AUTH_EVENTS              [description]
+ * @param  {[type]} TenantAdminService){}] [description]
+ * @return {[type]}                          [description]
+ */
+passwordManagementApp.controller('AdminSettingsCtrl',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
+    'TenantAdminService',function ($scope, $location, $rootScope, AUTH_EVENTS, TenantAdminService){
+
+	$scope.setPageDef ("Settings"); 
+
+	TenantAdminService.getSettings().then(function(settings){
+		$scope.settings = settings;
+	});
+}]);

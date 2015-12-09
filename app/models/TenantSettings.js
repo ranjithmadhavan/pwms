@@ -9,19 +9,13 @@ var mongoose = require('mongoose'),
 /**
  * Article Schema
  */
-var TenantQuestionSchema = new Schema({
+var TenantSettingSchema = new Schema({
 	created: {
 		type: Date,
 		default: Date.now
 	},
 	updated : {
 		type: Date
-	},
-	question: {
-		type: String,
-		default: '',
-		trim: true,
-		required: 'Question cannot be blank'
 	},
 	createdBy: {
 		type: Schema.ObjectId,
@@ -30,13 +24,25 @@ var TenantQuestionSchema = new Schema({
 	updatedBy: {
 		type: Schema.ObjectId,
 		ref: 'Tenant'
+	},
+	idpAdminUserName: {
+		type: String,
+		default: '',
+		trim: true,
+		required: 'IDP Admin Name Cannot be blank'
+	},
+	idpAdminPassword: {
+		type: String,
+		default: '',
+		trim: true,
+		required: 'IDP Admin Password Cannot be blank'
 	}
 });
 
 // Sets the updated time
-TenantQuestionSchema.pre('update', function() {
+TenantSettingSchema.pre('update', function() {
 	this.update({},{ $set: { updated: new Date() } });
 });
 
 
-mongoose.model('TenantQuestion', TenantQuestionSchema);
+mongoose.model('TenantSetting', TenantSettingSchema);

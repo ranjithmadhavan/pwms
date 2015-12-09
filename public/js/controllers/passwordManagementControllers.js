@@ -49,7 +49,8 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
      });
 
     $scope.$on(AUTH_EVENTS.loginFailed, function (event, args) {
-        console.log("Received Login Failed Broadcast");        
+        console.log("Received Login Failed Broadcast");  
+        $location.path("/login");       
      });
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, args) {
@@ -94,12 +95,12 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
 passwordManagementApp.controller('LoginCtrl',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
     'AuthService',function ($scope, $location, $rootScope, AUTH_EVENTS, AuthService){            
     $scope.credentials = {
-     /*   userName : "kvaughan",
+        userName : "kvaughan",
         password : "Password1",
-        siteId : "bsu.com"*/
-        userName : "quicklaunchadmin@quicklaunchsso.com",
+        siteId : "bsu.com"
+    /*    userName : "quicklaunchadmin@quicklaunchsso.com",
         password : "quicklaunchadmin",
-        siteId : ""
+        siteId : ""*/
     }
     // User is already logged in direct to home page.
     if (AuthService.isAuthenticated()) {        

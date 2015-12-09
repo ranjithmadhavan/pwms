@@ -1,3 +1,24 @@
 <div>
-User Profile {{userProfile}}
+	<div class="table-responsive">
+		<table class="table">
+			<tbody>
+				<tr ng-repeat="(key, value) in userProfile.userAttributes">
+					<td><strong>{{key}}</strong></td>
+					<td>{{value}}</td>
+				</tr>
+				<!-- <tr ng-repeat="(key, value) in userProfile.userAttributes">
+					<td><strong>{{key}}</strong></td>
+					<td>{{value}}</td>
+				</tr>
+				<tr ng-repeat="(key, value) in userProfile.userAttributes">
+					<td><strong>{{key}}</strong></td>
+					<td>{{value}}</td>
+				</tr>
+				<tr ng-repeat="(key, value) in userProfile.userAttributes">
+					<td><strong>{{key}}</strong></td>
+					<td>{{value}}</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</div>
 </div>

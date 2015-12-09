@@ -14,6 +14,6 @@ module.exports = function(app) {
 		.post(auth.isAuthenticated, tenantAdminController.deleteQuestion);	
 	
 	app.route("/modifyQuestion")
-		.post(auth.isAuthenticated, tenantAdminController.modifyQuestion);				
+		.post(auth.isAuthenticated, tenantAdminController.modifyQuestion);							
 		
 }

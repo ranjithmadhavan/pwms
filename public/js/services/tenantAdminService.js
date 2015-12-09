@@ -41,5 +41,12 @@ passwordManagementApp.factory('TenantAdminService', ['$q', '$http',
 					});
 	}
 
+	tenantAdminService.getSettings = function() {
+		return $http.get("/settings")
+					.then(function(res){
+						return res.data;
+					});
+	}
+
 	return tenantAdminService;
 }]);
