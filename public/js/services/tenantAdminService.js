@@ -40,13 +40,20 @@ passwordManagementApp.factory('TenantAdminService', ['$q', '$http',
 						return res.data
 					});
 	}
-
-	tenantAdminService.getSettings = function() {
-		return $http.get("/settings")
-					.then(function(res){
-						return res.data;
-					});
-	}
-
 	return tenantAdminService;
 }]);
+
+'use strict';
+
+//Articles service used for communicating with the articles REST endpoints
+passwordManagementApp.factory('TenantAdminSettings', ['$resource',
+	function($resource) {
+		return $resource('/settings/:tenantSettingsId', {
+			tenantSettingsId: '@_id'
+		}, {
+			update: {
+				method: 'PUT'
+			}
+		});
+	}
+]);

@@ -1,4 +1,4 @@
-var passwordManagementApp = angular.module('passwordManagementApp', ['ui.router','ngAnimate']);
+var passwordManagementApp = angular.module('passwordManagementApp', ['ui.router','ngAnimate', 'ngResource']);
 
 passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
     

@@ -16,6 +16,7 @@ global.chalk = require('chalk');
 global.reqlib = require('app-root-path').require;
 global.mongoose = require('mongoose'),
 global.envProps = envProps;
+global._ = require('lodash');
 
 
 // Bootstrap db connection

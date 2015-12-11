@@ -1,12 +1,22 @@
 <div>
+	
+    <div ng-include="'js/views/partials/includes/messages.html'"></div>
+    <br/>
 	<table class="table">
 		<tbody>
 			<tr>
-				<td><strong>Key</strong></td>
-				<td>Value</td>
-				<td><strong>Key</strong></td>
-				<td>Value1</td>
+				<td><strong>IDP User Name</strong></td>
+				<td><input type="text" class="form-control" ng-model="tenantAdminSettings.idpAdminUserName"/></td>
+				<td><strong>IDP Password</strong></td>
+				<td><input type="text" class="form-control" ng-model="tenantAdminSettings.idpAdminPassword"/></td>
 			</tr>
 		</tbody>
 	</table>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="text-center">
+				<button class="btn btn-sm btn-primary" ng-click="save()">Save Settings</button>
+			</div>
+		</div>
+	</div>
 </div>

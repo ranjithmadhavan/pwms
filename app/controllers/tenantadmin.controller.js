@@ -5,17 +5,12 @@ var TenantQuestion = mongoose.model("TenantQuestion"),
  * Get settings of the logged in tenant.
  */
 exports.setttingsList = function(req, res, next) {
-	TenantSetting.findOne({createdBy:req.loggedInUser}, function(err, tenantSettings){
+	TenantSetting.find({createdBy:req.loggedInUser._id}, function(err, tenantSettings){
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
-			if (!tenantSettings) {
-				tenantSettings = new TenantSetting({
-
-				});
-			}
+		} else {			
 			res.json(tenantSettings);
 		}
 	});
@@ -27,7 +22,7 @@ exports.setttingsList = function(req, res, next) {
 
 exports.createSettings = function(req, res) {
 	var tenantSettings = new TenantSetting(req.body);
-	tenantSettings.createdBy(req.loggedInUser);
+	tenantSettings.createdBy = req.loggedInUser._id;
 	tenantSettings.save(function(err){
 		if (err) {
 			return res.status(400).send({
@@ -42,10 +37,10 @@ exports.createSettings = function(req, res) {
 /**
  * Settings middleware
  */
-exports.populateSettingsInRequest = function(req, res, next, id) {
-	TenantSetting.findById(id).populate('createdBy').exec(function(err, tenantSetting) {
+exports.populateSettingsInRequest = function(req, res, next, tenantSettingId) {
+	TenantSetting.findById(tenantSettingId).populate('createdBy').exec(function(err, tenantSetting) {
 		if (err) return next(err);
-		if (!tenantSetting) return next(new Error('Failed to load tenantSetting ' + id));
+		if (!tenantSetting) return next(new Error('Failed to load tenantSetting ' + tenantSettingId));
 		req.tenantSetting = tenantSetting;
 		next();
 	});
@@ -79,7 +74,7 @@ exports.updateTenantSetting = function(req, res) {
  * Article authorization middleware
  */
 exports.hasAuthorizationToEditSettings = function(req, res, next) {
-	if (req.settings.createdBy._id !== req.loggedInUser._id) {
+	if ((String)(req.tenantSetting.createdBy._id) !== (String)(req.loggedInUser._id)) {
 		return res.status(403).send({
 			message: 'User is not authorized'
 		});
@@ -109,7 +104,6 @@ exports.addQuestion = function(req,res,next) {
 	});
 	tenantQuestion.save(function(err){
 		if (err) {
-			// res.status(400).json(err);
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});

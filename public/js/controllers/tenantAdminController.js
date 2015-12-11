@@ -39,6 +39,7 @@ passwordManagementApp.controller('AdminProfileQuestionsCtrl',['$scope', '$locati
 	    			$('#deleteConfirmationModal').modal('hide');
 	    			$scope.questions = questions;
 	    			$scope.newQuestion = {}
+	    			$scope.message = "Delete successful"
 	    		});
 	    }
 
@@ -58,6 +59,7 @@ passwordManagementApp.controller('AdminProfileQuestionsCtrl',['$scope', '$locati
 	    	TenantAdminService.modifyQuestion(questionToEdit)
 	    		.then(function(questions){
 	    			$scope.questions = questions;
+	    			$scope.message = "Save successful";
 	    		});
 	    }
 
@@ -75,11 +77,38 @@ passwordManagementApp.controller('AdminProfileQuestionsCtrl',['$scope', '$locati
  * @return {[type]}                          [description]
  */
 passwordManagementApp.controller('AdminSettingsCtrl',['$scope', '$location', '$rootScope', 'AUTH_EVENTS', 
-    'TenantAdminService',function ($scope, $location, $rootScope, AUTH_EVENTS, TenantAdminService){
+    'TenantAdminSettings',function ($scope, $location, $rootScope, AUTH_EVENTS, TenantAdminSettings){
 
 	$scope.setPageDef ("Settings"); 
 
-	TenantAdminService.getSettings().then(function(settings){
-		$scope.settings = settings;
-	});
+	$scope.getAdminSettings = function() {
+		$scope.tenantAdminSettings = new TenantAdminSettings();
+		var settings = TenantAdminSettings.query();
+		settings.$promise.then(function(result){			
+			if (result && result.length > 0) {
+				$scope.tenantAdminSettings = result[0];
+			} 
+		});
+	}
+
+	$scope.save = function() {
+		var settings = $scope.tenantAdminSettings;
+		if (settings._id) {
+			settings.$update(function(response) {
+				$scope.message = "Save successful."
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+
+		} else {
+			settings.$save(function(response) {
+				$scope.message = "Save successful."
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		}
+		
+	};
+
+	$scope.getAdminSettings();
 }]);
