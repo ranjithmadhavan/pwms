@@ -23,6 +23,7 @@
     "lodash": "^3.10.1",
     "mongoose": "^4.2.6",
     "morgan": "~1.5.3",
+    "node-restful": "^0.2.4",
     "nodemailer": "^1.10.0",
     "promised-ldap": "^0.1.0",
     "request": "^2.65.0",
