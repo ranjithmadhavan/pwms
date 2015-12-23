@@ -32,3 +32,12 @@ passwordManagementApp.controller('AdminProfileQuestionsCtrl',['$scope', '$locati
 passwordManagementApp.controller('AdminSettingsCtrl',['$scope', '$location', 'AuthService', '$state',function ($scope, $location, AuthService, $state){    
 	$scope.setPageDef ("Settings");
 }]);
+
+passwordManagementApp.controller('UserPasswordResetCtrl',['$scope', '$location', 'UserService', '$state',function ($scope, $location, UserService, $state){    
+	$scope.setPageDef ("Reset Password");
+	$scope.selfPasswordReset = function() {
+		console.log("Called Reset User Password with old password "+$scope.currentPassword+" and new password "+$scope.newPassword);
+		UserService.selfPasswordReset($scope.currentPassword,$scope.newPassword);
+	}
+}]);
+

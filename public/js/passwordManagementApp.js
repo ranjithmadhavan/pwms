@@ -25,6 +25,11 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
             controller: 'UserProfileCtrl',
             templateUrl: 'js/views/partials/userProfile.html'
         })    
+        .state('home.userResetPassword', {
+            url: '/userPasswordReset',
+            controller: 'UserPasswordResetCtrl',
+            templateUrl: 'js/views/partials/userPasswordReset.html'
+        })    
         .state('login', {
             url: '/login',
             controller : 'LoginCtrl',
@@ -52,7 +57,8 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
   sessionTimeout: 'auth-session-timeout',
   notAuthenticated: 'auth-not-authenticated',
   notAuthorized: 'auth-not-authorized',
-  serverError : 'internal-server-error'
+  serverError : 'internal-server-error',
+  notFound : 'url-not-found'
 })
 
 .constant('USER_ROLES', {

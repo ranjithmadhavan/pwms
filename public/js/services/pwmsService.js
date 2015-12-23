@@ -109,7 +109,8 @@ passwordManagementApp.factory('AuthInterceptor', ['$rootScope', '$q','AUTH_EVENT
                 $rootScope.$broadcast(APP_CONSTANTS.hideLoader);
 			}
 			$rootScope.$broadcast({
-				400: AUTH_EVENTS.customError,
+				400: AUTH_EVENTS.customError,				
+				404: AUTH_EVENTS.notFound,
 		    	401: AUTH_EVENTS.notAuthenticated,
 		    	403: AUTH_EVENTS.notAuthorized,
 		    	419: AUTH_EVENTS.sessionTimeout,

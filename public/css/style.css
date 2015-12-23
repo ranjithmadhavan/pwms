@@ -1,9 +1,11 @@
 @import url("animations.css");
 @import url('http://fonts.googleapis.com/css?family=Josefin+Sans');
+/*@import url('http://fonts.googleapis.com/css?family=Droid+Serif');*/
 
 body { 
   padding: 10px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
+  font: 14px "Josefin Sans", Helvetica, Arial, sans-serif;
 } 
 
 .fullwidth {
@@ -20,6 +22,10 @@ a {
     left:0;
     /*position: absolute;*/
 } 
+
+.shadow {
+  box-shadow: 10px 10px 5px #888888;
+}
 
 
 .bordered {

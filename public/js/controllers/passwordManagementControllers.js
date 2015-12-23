@@ -16,6 +16,22 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
        return Session.userId;
     }
 
+    $scope.message = "";
+    $scope.error = ""
+
+    $scope.setMessage = function(message) {
+        $scope.message = message;
+    }
+
+    $scope.setError = function(error) {
+        $scope.error = error;
+    }
+
+    $scope.clearMessages = function() {
+        $scope.message = "";
+        $scope.error = "";
+    }
+
     $scope.validationErrors = [];
     $scope.setValidationErrors = function(validationErrors) {
         $scope.validationErrors = validationErrors;
@@ -42,6 +58,7 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
     $scope.$on(APP_CONSTANTS.showLoader, function (event, args) {
         $scope.loaderClass = "spinner-loader spinner-div";
         $scope.setValidationErrors([]);
+        $scope.clearMessages();
      });
 
      $scope.$on(APP_CONSTANTS.hideLoader, function (event, args) {
@@ -55,8 +72,13 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, args) {
         console.log("Received not Authenciated Broadcast");
-        $scope.errorMsg = "Session expired. Please login";
+        $scope.setError("Session expired. Please login");
         $scope.logout();
+     });
+
+     $scope.$on(AUTH_EVENTS.notFound, function (event, args) {
+        console.log("Received not Found Broadcast");
+        $scope.setError("Requested Url ("+args.config.url+") not found on server");
      });
 
 
@@ -125,7 +147,8 @@ passwordManagementApp.controller('HomeCtrl',['$scope', '$location', 'AuthService
        // By Default to to user profile page.
         $state.go("home.adminProfilequestionSetup");     
    } else {
-       $state.go("home.userProfile");  
+       // $state.go("home.userProfile");  
+       $state.go("home.userResetPassword");  
    }
  
 }]);

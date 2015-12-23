@@ -95,16 +95,16 @@ passwordManagementApp.controller('AdminSettingsCtrl',['$scope', '$location', '$r
 		var settings = $scope.tenantAdminSettings;
 		if (settings._id) {
 			settings.$update(function(response) {
-				$scope.message = "Save successful."
+				$scope.setMessage("Save successful.");
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				$scope.setError(errorResponse.data.message);
 			});
 
 		} else {
 			settings.$save(function(response) {
-				$scope.message = "Save successful."
+				$scope.setMessage("Save successful.");
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				$scope.setError(errorResponse.data.message);
 			});
 		}
 		

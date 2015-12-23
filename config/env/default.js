@@ -15,7 +15,8 @@ module.exports = {
 			user : {
 				login : {
 					url : wso2BaseUrl+"/services/UserIdentityManagementAdminService.UserIdentityManagementAdminServiceHttpsSoap12Endpoint/"
-				}
+				},
+				passwordSelfResetUrl : wso2BaseUrl+"/services/UserIdentityManagementAdminService.UserIdentityManagementAdminServiceHttpsSoap12Endpoint/"
 			}
 		}
 	},

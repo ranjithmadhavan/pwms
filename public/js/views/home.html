@@ -13,7 +13,9 @@
         <div class="panel-heading" id="panelHeadings">
           <strong>{{pageDef}}</strong>
         </div>
-        <div class="panel-body">
+        <br/>
+        <div ng-include="'js/views/partials/includes/messages.html'"></div>
+        <div class="panel-body shadow">
             <div ui-view class="slider"></div>
         </div>
       </div>

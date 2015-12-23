@@ -5,7 +5,7 @@
  * @param  {[type]} $window){}] [description]
  * @return {[type]}               [description]
  */
-passwordManagementApp.factory("UserService",['$http','Session', '$window', function($http, Session, $window){
+passwordManagementApp.factory("UserService",['$http','Session', '$window', '$q', function($http, Session, $window, $q){
 	var userService = {};
 
 
@@ -16,6 +16,16 @@ passwordManagementApp.factory("UserService",['$http','Session', '$window', funct
 			});
 	}
 
+	userService.selfPasswordReset = function(oldPassword, newPassword) {
+		var deferred = $q.defer();
+		$http.post("/selfPasswordReset", {oldPassword:oldPassword, newPassword:newPassword})
+			.then(function(response){
+				deferred.resolve(response);
+			}, function(error){
+				deferred.reject(error);
+			});
+		return deferred.promise;
+	}
 	return userService;
 
 }]);

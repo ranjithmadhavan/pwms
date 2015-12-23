@@ -40,6 +40,7 @@ function prepareRequest (wsdlurl, requestTemplateName, params) {
         for (var key in params) {
             requestXml = requestXml.replaceAll("##"+key+"##", params[key]);
         }       
+        // console.log("Request xml is "+requestXml);
         options.body = requestXml;
         resolve(options);
     });
