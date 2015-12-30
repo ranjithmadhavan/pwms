@@ -14,11 +14,9 @@ exports.selfPasswordReset = function (req, res) {
 	console.log("Self password reset called.");
 	var passwordSelfResetUrl = envProps.wso2.webservices.user.passwordSelfResetUrl;
 	var userName = req.loggedInUser.userId;
-	var oldPassword = req.body.oldPassword;
-	var newPassword = req.body.newPassword;
 	var params = {}
-	params.oldPassword = oldPassword;
-	params.newPassword = newPassword;
+	params.oldPassword = req.body.oldPassword;
+	params.newPassword = req.body.newPassword;
 	var siteId = req.loggedInUser.tenantMapping;
 	if (!userName || !siteId) {
 		res.json({errorMsg: "Could not get userid of the user from database"});
