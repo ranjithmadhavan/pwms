@@ -84,7 +84,7 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
 
     $scope.$on(AUTH_EVENTS.customError, function (event, args) {
         console.log("Received Custom Error");   
-        $scope.validationErrors.push(args.data.message);
+        // $scope.validationErrors.push(args.data.message);
         $scope.setError(args.data.message);
      });
 

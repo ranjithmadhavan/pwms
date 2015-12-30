@@ -59,13 +59,13 @@ exports.authenticate = function(req, res) {
 			.then(function(){
 				tenant.icon = "";
 				jwt.sign({userId:tenant.email, tenantMapping:null, role:"ROLE_ADMIN"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
-					res.json({id: tenant.userName, user : {id:tenant.userName, role: "ROLE_ADMIN"}, token:token });	
+					return res.json({id: tenant.userName, user : {id:tenant.userName, role: "ROLE_ADMIN"}, token:token });	
 				});
 			});
 		})
 		.catch(function(error){
 			console.log("Authentication failed due to "+error);
-			res.status(403).json({errorMsg: error});
+			return res.status(403).json({errorMsg: error});
 		})
 }
 
@@ -84,7 +84,7 @@ exports.profile = function(req, res) {
 		function(err){
 		      if (err) {
 		        console.log("Error is "+err);
-		        res.status(500).json({errorMsg: "Unknown error "+err});
+		        return res.status(500).json({errorMsg: "Unknown error "+err});
 		      } else {
 		        console.log("No Error");
 		      }
@@ -110,7 +110,7 @@ function fetchUserFromDb (req, res, callback) {
 			}
 		});
 	} else {
-		res.status(403).json({errorMsg: "Cannot get profile for admin user"});
+		return res.status(403).json({errorMsg: "Cannot get profile for admin user"});
 	}
 }
 
@@ -129,7 +129,7 @@ function fetchUserAttributes(req, res, user, callback) {
 	var password = user.password;
 	var siteId = user.tenantMapping;
 	if (!userName || !password || !siteId) {
-		res.json({errorMsg: "Could not get userid of the user from database"});
+		return res.json({errorMsg: "Could not get userid of the user from database"});
 	} 
 	userProfileUrl = userProfileUrl.replaceAll("##USERNAME##",userName+"@"+siteId).replaceAll("##PASSWORD##",password);
 	wsClient.makeSoapCall(userProfileUrl, "userLogin.xml", null)
@@ -271,7 +271,7 @@ exports.login = function(req, res, next) {
 	var siteId = req.body.siteId;
 	var password = req.body.password;
 	if (!userName || !password || !siteId) {
-		res.status(403).json({errorMsg: "Provide UserName, Password & SiteId"});
+		return res.status(403).json({errorMsg: "Provide UserName, Password & SiteId"});
 	} 
 	loginUrl = loginUrl.replaceAll("##USERNAME##",userName+"@"+siteId).replaceAll("##PASSWORD##",password);
 	// If there is a registred tenant then try and authenticate the user
@@ -293,7 +293,7 @@ exports.login = function(req, res, next) {
 	            callback(error);
 	          });
 	      } else {
-	      	res.status(403).json({errorMsg:"Site id not registered"});
+	      	return res.status(403).json({errorMsg:"Site id not registered"});
 	      }
 	    },
 	    // Parse the response and see whether there are any errors.
@@ -309,7 +309,7 @@ exports.login = function(req, res, next) {
 	    // If no errors add the user to the user db.
 	    function(faultResponse, callback) {
 	      if (faultResponse && faultResponse.length > 0) {
-	        res.status(403).json({errorMsg: "Invalid UserId and/or Password"});
+	        return res.status(403).json({errorMsg: "Invalid UserId and/or Password"});
 	      } else {
 	        User.findOne({"tenantMapping":siteId, userId: userName}, function(err, user){	        	
 	        	if (user) {
@@ -317,7 +317,7 @@ exports.login = function(req, res, next) {
 	        		user.password = password;
 	        		user.save();
 	        		jwt.sign({userId:user.userId, tenantMapping:siteId, role:"ROLE_USER"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
-	        			res.json({id: userName, user : {id:userName, role: "ROLE_USER"} , token:token });		        			
+	        			return res.json({id: userName, user : {id:userName, role: "ROLE_USER"} , token:token });		        			
 					});	
 	        	} else {
 	        		console.log("Fresh sign in. Adding user "+userName)
@@ -329,11 +329,11 @@ exports.login = function(req, res, next) {
 	        		newUser.save(function(err, user) {
 	        			if (!err) {
 			        		jwt.sign({userId:user.userId, tenantMapping:siteId, role:"ROLE_USER"}, envProps.jwt.secret, { expiresIn: envProps.jwt.expiresIn }, function(token) {			  
-			        			res.json({id: userName, user : {id:userName, role: "ROLE_USER"}, token:token });	
+			        			return res.json({id: userName, user : {id:userName, role: "ROLE_USER"}, token:token });	
 							});	        				
 	        			} else {
 	        				console.log("Error while adding new user "+userName+" due to "+err);
-	        				res.status(403).json({errorMsg:"Cannot Sign in due to "+err});
+	        				return res.status(403).json({errorMsg:"Cannot Sign in due to "+err});
 	        			}		
 	        		});
 	        	}
@@ -344,7 +344,7 @@ exports.login = function(req, res, next) {
 	  ], function(err){
 	      if (err) {
 	        console.log("Error is "+err);
-	        res.status(500).json({errorMsg: "Unknown error "+err});
+	        return res.status(500).json({errorMsg: "Unknown error "+err});
 	      } else {
 	        console.log("No Error");
 	      }

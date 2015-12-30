@@ -19,7 +19,7 @@ exports.selfPasswordReset = function (req, res, next) {
 	params.newPassword = req.body.newPassword;
 	var siteId = req.loggedInUser.tenantMapping;
 	if (!userName || !siteId) {
-		res.json({errorMsg: "Could not get userid of the user from database"});
+		res.status(400).send({message: "Could not get userid of the user from database"});
 	} 
 	passwordSelfResetUrl = passwordSelfResetUrl.replaceAll("##USERNAME##",userName+"@"+siteId).replaceAll("##PASSWORD##",params.oldPassword);	
 	wsClient.makeSoapCall(passwordSelfResetUrl, "selfPasswordReset.xml", params)
@@ -39,3 +39,4 @@ exports.selfPasswordReset = function (req, res, next) {
 
 
 
+
