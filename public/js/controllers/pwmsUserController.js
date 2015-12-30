@@ -37,7 +37,10 @@ passwordManagementApp.controller('UserPasswordResetCtrl',['$scope', '$location',
 	$scope.setPageDef ("Reset Password");
 	$scope.selfPasswordReset = function() {
 		console.log("Called Reset User Password with old password "+$scope.currentPassword+" and new password "+$scope.newPassword);
-		UserService.selfPasswordReset($scope.currentPassword,$scope.newPassword);
+		UserService.selfPasswordReset($scope.currentPassword,$scope.newPassword)
+			.then(function(response){				
+				$scope.setMessage("Password changed successfully. Please logout and login again");
+			});
 	}
 }]);
 

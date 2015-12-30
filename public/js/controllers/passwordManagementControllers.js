@@ -83,14 +83,14 @@ passwordManagementApp.controller('MainCtrl',['$scope', '$location', '$window', '
 
 
     $scope.$on(AUTH_EVENTS.customError, function (event, args) {
-        console.log("Received Custom Error");    
-    /*    if (args.data.errors) {
-           var keys = Object.keys(args.data.errors);
-           keys.forEach(function(element, index, array){
-                $scope.validationErrors.push(args.data.errors[element].message);
-           });
-        } */
+        console.log("Received Custom Error");   
         $scope.validationErrors.push(args.data.message);
+        $scope.setError(args.data.message);
+     });
+
+    $scope.$on(AUTH_EVENTS.serverError, function (event, args) {
+        console.log("Received 500 Internal Error");   
+        $scope.setError(args.data.message);
      });
 
     $scope.$on(AUTH_EVENTS.notAuthorized, function (event, args) {
