@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('pwms:server');
 var http = require('http');
 var chalk = require('chalk');
+var cluster = require("cluster");
 
 /**
  * Get port from environment and store in Express.

@@ -4,7 +4,7 @@ var request = require('request'),
 	    method:'POST',
 	    rejectUnauthorized: false, 
 	    headers :{
-	         "Content-Type " : "application/x-www-form-urlencoded "
+	         "Content-Type " : "application/x-www-form-urlencoded"
 	    },
 	    formData: {email:'quicklaunchadmin@quicklaunchsso.com',password : 'quicklaunchadmin'}
 	},
