@@ -29,6 +29,11 @@ passwordManagementApp.config(function($stateProvider, $urlRouterProvider) {
             url: '/userPasswordReset',
             controller: 'UserPasswordResetCtrl',
             templateUrl: 'js/views/partials/userPasswordReset.html'
+        })            
+        .state('home.userSettings', {
+            url: '/userSettings',
+            controller: 'UserSettingsCtrl',
+            templateUrl: 'js/views/partials/userSettings.html'
         })    
         .state('login', {
             url: '/login',
