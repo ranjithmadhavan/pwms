@@ -1,4 +1,4 @@
-var qlbaseurl = process.env.QUICKLAUNCH_BASE_URL || "https://localhost/QuickLaunch";
+var qlbaseurl = process.env.QUICKLAUNCH_BASE_URL || "https://localhost/admin";
 var wso2BaseUrl = process.env.WSO2_BASE_URL || "https://##USERNAME##:##PASSWORD##@localhost:9443";
 
 module.exports = {
